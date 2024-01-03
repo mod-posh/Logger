@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
-
-namespace ModPosh.Logger
+﻿namespace ModPosh.Logger
 {
     public class Logger : ILogger
     {
@@ -11,13 +7,10 @@ namespace ModPosh.Logger
         private readonly bool _logToConsole;
         public Logger()
         {
-            _logToConsole = true;
-        }
-        public Logger(string logFilePath)
-        {
-            _logToFile = true;
-            _logToConsole = false;
-            _logFilePath = logFilePath;
+            var config = ConfigurationReader.ReadConfiguration();
+            _logToFile = config.LogToFile;
+            _logToConsole = config.LogToConsole;
+            _logFilePath = config.LogFilePath;
         }
         private void Log(string message, string messageType)
         {
