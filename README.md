@@ -1,2 +1,3 @@
 # Logger
-My own logging implementation compatible with .net7 and PowerShell
+
+My logging implementation is compatible with .net7 and PowerShell
