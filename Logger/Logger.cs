@@ -4,12 +4,6 @@ using System.Text.Json;
 
 namespace ModPosh.Logger
 {
-    public interface ILogger
-    {
-        void LogInformation(string message);
-        void LogWarning(string message);
-        void LogError(string message);
-    }
     public class Logger : ILogger
     {
         private readonly string _logFilePath = string.Empty;
@@ -18,36 +12,6 @@ namespace ModPosh.Logger
         public Logger()
         {
             _logToConsole = true;
-        }
-        private LoggerConfig ReadConfiguration()
-        {
-            try
-            {
-                string configText = File.ReadAllText("appsettings.json");
-                var config = JsonSerializer.Deserialize<LoggerConfig>(configText);
-
-                if (config != null)
-                {
-                    return config;
-                }
-            }
-            catch (FileNotFoundException)
-            {
-            }
-            catch (JsonException)
-            {
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error reading configuration: {ex.Message}");
-            }
-
-            return new LoggerConfig
-            {
-                LogToFile = false,
-                LogToConsole = true,
-                LogFilePath = string.Empty
-            };
         }
         public Logger(string logFilePath)
         {
@@ -65,8 +29,7 @@ namespace ModPosh.Logger
                 {
                     Console.WriteLine(formattedMessage);
                 }
-
-                if (_logToFile && IsValidFile(_logFilePath))
+                if (_logToFile && FileUtility.IsValidFile(_logFilePath))
                 {
                     File.AppendAllText(_logFilePath, formattedMessage + Environment.NewLine);
                 }
@@ -101,33 +64,6 @@ namespace ModPosh.Logger
         public void LogError(string message)
         {
             Log(message, "ERROR");
-        }
-        private bool IsValidFile(string path)
-        {
-            try
-            {
-                var directory = Path.GetDirectoryName(path);
-                if (!Directory.Exists(directory))
-                {
-                    throw new ArgumentException("The directory part of the path does not exist.");
-                }
-                if (Directory.Exists(path))
-                {
-                    throw new ArgumentException("The path is a directory, not a file.");
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in IsValidFile: {ex.Message}");
-                return false;
-            }
-        }
-        private class LoggerConfig
-        {
-            public bool LogToFile { get; set; }
-            public bool LogToConsole { get; set; }
-            public string LogFilePath { get; set; } = string.Empty;
         }
     }
 }
