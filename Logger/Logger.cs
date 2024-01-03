@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
 
 namespace ModPosh.Logger
 {
@@ -17,6 +18,36 @@ namespace ModPosh.Logger
         public Logger()
         {
             _logToConsole = true;
+        }
+        private LoggerConfig ReadConfiguration()
+        {
+            try
+            {
+                string configText = File.ReadAllText("appsettings.json");
+                var config = JsonSerializer.Deserialize<LoggerConfig>(configText);
+
+                if (config != null)
+                {
+                    return config;
+                }
+            }
+            catch (FileNotFoundException)
+            {
+            }
+            catch (JsonException)
+            {
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error reading configuration: {ex.Message}");
+            }
+
+            return new LoggerConfig
+            {
+                LogToFile = false,
+                LogToConsole = true,
+                LogFilePath = string.Empty
+            };
         }
         public Logger(string logFilePath)
         {
@@ -91,6 +122,12 @@ namespace ModPosh.Logger
                 Console.WriteLine($"Error in IsValidFile: {ex.Message}");
                 return false;
             }
+        }
+        private class LoggerConfig
+        {
+            public bool LogToFile { get; set; }
+            public bool LogToConsole { get; set; }
+            public string LogFilePath { get; set; } = string.Empty;
         }
     }
 }
