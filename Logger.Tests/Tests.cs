@@ -1,7 +1,5 @@
-﻿using NUnit.Framework;
-using Moq;
-using ModPosh.Logger;
-using System.IO;
+﻿using Moq;
+using NUnit.Framework;
 
 namespace ModPosh.Logger.Tests
 {
@@ -64,13 +62,14 @@ namespace ModPosh.Logger.Tests
             // Arrange
             string logFilePath = Path.Combine(tempPath, logFileName);
             var mockConfigReader = new Mock<IConfigurationReader>();
-            var mockConfig = new LoggerConfig {
+            var mockConfig = new LoggerConfig
+            {
                 LogToFile = true,
                 LogToConsole = false,
                 LogFilePath = logFilePath
             };
             mockConfigReader.Setup(m => m.ReadConfiguration(It.IsAny<string>())).Returns(mockConfig);
-            var logger = new Logger(mockConfigReader.Object,"appsettings.json");
+            var logger = new Logger(mockConfigReader.Object, "appsettings.json");
 
             // Act
             string expectedMessage = "Test log message";

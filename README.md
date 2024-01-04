@@ -24,22 +24,43 @@
 
 1. **Initialization**: Create an instance of the `Logger` class.
 
+   This method creates a Logger instance using configuration settings from a specified file path.
+
    ```csharp
    using ModPosh.Logger;
 
-   var logger = new Logger();
+   // Assume you have a configuration file at the specified path
+   string configFilePath = "path/to/config.json";
+
+   // Create a Logger instance using the configuration file
+   Logger loggerFromConfig = LoggerFactory.CreateLogger(configFilePath);
+
+   // Use the logger
+   loggerFromConfig.LogInformation("This is an informational message from the configured logger.");
+
    ```
 
-   To use a specific configuration file:
+   This method creates a Logger instance with default settings that log to the console.
 
    ```csharp
-   var logger = new Logger(true, "path/to/config.json");
+   // Create a Logger instance that logs to the console
+   Logger consoleLogger = LoggerFactory.CreateConsoleLogger();
+
+   // Use the logger
+   consoleLogger.LogInformation("This message will be logged to the console.");
    ```
 
-   To directly specify a log file path:
+   This method creates a Logger instance that logs messages to a specified file.
 
    ```csharp
-   var logger = new Logger("path/to/logfile.log");
+   // Specify the path where log messages will be written
+   string logFilePath = "path/to/logfile.log";
+
+   // Create a Logger instance that logs to the specified file
+   Logger fileLogger = LoggerFactory.CreateFileLogger(logFilePath);
+
+   // Use the logger
+   fileLogger.LogInformation("This message will be logged to the file.");
    ```
 
 2. **Logging Messages**:
@@ -64,12 +85,6 @@
 
    ```powershell
    $logger = New-Object ModPosh.Logger.Logger
-   ```
-
-   With a configuration file:
-
-   ```powershell
-   $logger = New-Object ModPosh.Logger.Logger($true, "path\to\config.json")
    ```
 
    With a direct log file path:
