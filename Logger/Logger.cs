@@ -5,6 +5,7 @@
         private readonly string _logFilePath = string.Empty;
         private readonly bool _logToFile;
         private readonly bool _logToConsole;
+        private readonly long _maxLogSize = 10 * 1024 * 1024;
         public Logger()
         {
             var config = new LoggerConfig();
@@ -28,12 +29,21 @@
                 _logFilePath = Path;
             }
         }
+        private void CheckAndRotateLogFile()
+        {
+            if (File.Exists(_logFilePath) && new FileInfo(_logFilePath).Length > _maxLogSize)
+            {
+                string archivePath = $"{_logFilePath}.{DateTime.Now:yyyyMMddHHmmss}.bak";
+                File.Move(_logFilePath, archivePath);
+            }
+        }
         private void Log(string message, string messageType)
         {
             var formattedMessage = $"{DateTime.Now} [{messageType}]: {message}";
 
             try
             {
+                CheckAndRotateLogFile();
                 if (_logToConsole)
                 {
                     Console.WriteLine(formattedMessage);
