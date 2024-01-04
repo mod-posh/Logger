@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
+using ModPosh.Logger.Interfaces;
+using ModPosh.Logger.Models;
 
-namespace ModPosh.Logger
+namespace ModPosh.Logger.Implementations
 {
     /// <summary>
     /// Provides functionality to read configuration settings for the Logger.

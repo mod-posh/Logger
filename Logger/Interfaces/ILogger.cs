@@ -1,4 +1,4 @@
-﻿namespace ModPosh.Logger
+﻿namespace ModPosh.Logger.Interfaces
 {
     /// <summary>
     /// Defines a set of methods for logging information, warnings, and errors.

@@ -1,4 +1,6 @@
-﻿namespace ModPosh.Logger
+﻿using ModPosh.Logger.Models;
+
+namespace ModPosh.Logger.Interfaces
 {
     /// <summary>
     /// Defines a contract for a configuration reader that reads logger settings.

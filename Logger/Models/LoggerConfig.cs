@@ -1,4 +1,4 @@
-﻿namespace ModPosh.Logger
+﻿namespace ModPosh.Logger.Models
 {
     /// <summary>
     /// Represents configuration settings for the Logger.

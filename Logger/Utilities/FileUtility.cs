@@ -1,4 +1,4 @@
-﻿namespace ModPosh.Logger
+﻿namespace ModPosh.Logger.Utilities
 {
     /// <summary>
     /// Provides utility functions for file operations.

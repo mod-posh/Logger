@@ -1,4 +1,7 @@
-﻿namespace ModPosh.Logger
+﻿using ModPosh.Logger.Interfaces;
+using ModPosh.Logger.Utilities;
+
+namespace ModPosh.Logger.Implementations
 {
     /// <summary>
     /// Implements the ILogger interface for logging messages to console and/or file.

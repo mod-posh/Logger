@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using ModPosh.Logger.Interfaces;
+using Moq;
 using NUnit.Framework;
 
 namespace ModPosh.Logger.Tests
@@ -32,7 +33,7 @@ namespace ModPosh.Logger.Tests
         {
             // Arrange
             string logFilePath = Path.Combine(tempPath, logFileName);
-            var logger = new Logger(logFilePath);
+            var logger = new Implementations.Logger(logFilePath);
 
             // Act
             logger.LogInformation("Test log message");
@@ -46,7 +47,7 @@ namespace ModPosh.Logger.Tests
         public void Logger_WritesToConsole()
         {
             // Arrange
-            var logger = new Logger();
+            var logger = new Implementations.Logger();
 
             // Act
             string expectedMessage = "Test log message";
@@ -62,14 +63,14 @@ namespace ModPosh.Logger.Tests
             // Arrange
             string logFilePath = Path.Combine(tempPath, logFileName);
             var mockConfigReader = new Mock<IConfigurationReader>();
-            var mockConfig = new LoggerConfig
+            var mockConfig = new Models.LoggerConfig
             {
                 LogToFile = true,
                 LogToConsole = false,
                 LogFilePath = logFilePath
             };
             mockConfigReader.Setup(m => m.ReadConfiguration(It.IsAny<string>())).Returns(mockConfig);
-            var logger = new Logger(mockConfigReader.Object, "appsettings.json");
+            var logger = new Implementations.Logger(mockConfigReader.Object, "appsettings.json");
 
             // Act
             string expectedMessage = "Test log message";
@@ -86,14 +87,14 @@ namespace ModPosh.Logger.Tests
         {
             // Arrange
             var mockConfigReader = new Mock<IConfigurationReader>();
-            var mockConfig = new LoggerConfig
+            var mockConfig = new Models.LoggerConfig
             {
                 LogToFile = false,
                 LogToConsole = true,
                 LogFilePath = string.Empty
             };
             mockConfigReader.Setup(m => m.ReadConfiguration(It.IsAny<string>())).Returns(mockConfig);
-            var logger = new Logger(mockConfigReader.Object, "appsettings.json");
+            var logger = new Implementations.Logger(mockConfigReader.Object, "appsettings.json");
 
             // Act
             string expectedMessage = "Test log message";

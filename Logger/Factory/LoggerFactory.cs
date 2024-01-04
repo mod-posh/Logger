@@ -1,4 +1,7 @@
-﻿namespace ModPosh.Logger
+﻿using ModPosh.Logger.Implementations;
+using ModPosh.Logger.Interfaces;
+
+namespace ModPosh.Logger.Factory
 {
     /// <summary>
     /// Provides factory methods for creating instances of the Logger class.
@@ -13,10 +16,10 @@
         /// <remarks>
         /// This method reads configuration settings from the provided file path and initializes a new Logger instance with these settings.
         /// </remarks>
-        public static Logger CreateLogger(string configFilePath)
+        public static Implementations.Logger CreateLogger(string configFilePath)
         {
             IConfigurationReader configReader = new ConfigurationReader();
-            return new Logger(configReader, configFilePath);
+            return new Implementations.Logger(configReader, configFilePath);
         }
         /// <summary>
         /// Creates a Logger instance with default settings that logs to the console.
@@ -25,9 +28,9 @@
         /// <remarks>
         /// This method creates a Logger instance with default settings where logging to the console is enabled.
         /// </remarks>
-        public static Logger CreateConsoleLogger()
+        public static Implementations.Logger CreateConsoleLogger()
         {
-            return new Logger();
+            return new Implementations.Logger();
         }
         /// <summary>
         /// Creates a Logger instance that logs messages to a specified file.
@@ -37,9 +40,9 @@
         /// <remarks>
         /// This method creates a Logger instance that writes log messages to the file located at the provided path.
         /// </remarks>
-        public static Logger CreateFileLogger(string Path)
+        public static Implementations.Logger CreateFileLogger(string Path)
         {
-            return new Logger(Path);
+            return new Implementations.Logger(Path);
         }
     }
 }

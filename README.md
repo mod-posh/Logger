@@ -33,7 +33,7 @@
    string configFilePath = "path/to/config.json";
 
    // Create a Logger instance using the configuration file
-   Logger loggerFromConfig = LoggerFactory.CreateLogger(configFilePath);
+   Logger loggerFromConfig = Factory.LoggerFactory.CreateLogger(configFilePath);
 
    // Use the logger
    loggerFromConfig.LogInformation("This is an informational message from the configured logger.");
@@ -44,7 +44,7 @@
 
    ```csharp
    // Create a Logger instance that logs to the console
-   Logger consoleLogger = LoggerFactory.CreateConsoleLogger();
+   Logger consoleLogger = Factory.LoggerFactory.CreateConsoleLogger();
 
    // Use the logger
    consoleLogger.LogInformation("This message will be logged to the console.");
@@ -57,7 +57,7 @@
    string logFilePath = "path/to/logfile.log";
 
    // Create a Logger instance that logs to the specified file
-   Logger fileLogger = LoggerFactory.CreateFileLogger(logFilePath);
+   Logger fileLogger = Factory.LoggerFactory.CreateFileLogger(logFilePath);
 
    // Use the logger
    fileLogger.LogInformation("This message will be logged to the file.");
@@ -84,13 +84,13 @@
    For default configuration:
 
    ```powershell
-   $logger = New-Object ModPosh.Logger.Logger
+   $logger = New-Object ModPosh.Logger.Implementations.Logger
    ```
 
    With a direct log file path:
 
    ```powershell
-   $logger = New-Object ModPosh.Logger.Logger("path\to\logfile.log")
+   $logger = New-Object ModPosh.Logger.Implementations.Logger("path\to\logfile.log")
    ```
 
 3. **Logging Messages**:
