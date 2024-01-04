@@ -7,7 +7,14 @@
         private readonly bool _logToConsole;
         public Logger()
         {
-            var config = ConfigurationReader.ReadConfiguration();
+            var config = new LoggerConfig();
+            _logToFile = config.LogToFile;
+            _logToConsole = config.LogToConsole;
+            _logFilePath = config.LogFilePath;
+        }
+        public Logger(string ConfigurationPath)
+        {
+            var config = ConfigurationReader.ReadConfiguration(ConfigurationPath);
             _logToFile = config.LogToFile;
             _logToConsole = config.LogToConsole;
             _logFilePath = config.LogFilePath;
