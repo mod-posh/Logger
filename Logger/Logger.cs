@@ -12,12 +12,21 @@
             _logToConsole = config.LogToConsole;
             _logFilePath = config.LogFilePath;
         }
-        public Logger(string ConfigurationPath)
+        public Logger(bool FromConfig, string Path)
         {
-            var config = ConfigurationReader.ReadConfiguration(ConfigurationPath);
-            _logToFile = config.LogToFile;
-            _logToConsole = config.LogToConsole;
-            _logFilePath = config.LogFilePath;
+            if (FromConfig == true)
+            {
+                var config = ConfigurationReader.ReadConfiguration(Path);
+                _logToFile = config.LogToFile;
+                _logToConsole = config.LogToConsole;
+                _logFilePath = config.LogFilePath;
+            }
+            else
+            {
+                _logToFile = true;
+                _logToConsole = false;
+                _logFilePath = Path;
+            }
         }
         private void Log(string message, string messageType)
         {

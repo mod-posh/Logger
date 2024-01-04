@@ -2,8 +2,8 @@
 {
     public class LoggerConfig
     {
-        public bool LogToFile { get; set; }
-        public bool LogToConsole { get; set; }
+        public bool LogToFile { get; set; } = false;    
+        public bool LogToConsole { get; set; } = true;
         public string LogFilePath { get; set; } = string.Empty;
     }
 }
