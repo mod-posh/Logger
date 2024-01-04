@@ -14,31 +14,33 @@
         /// </summary>
         public Logger()
         {
-            var config = new LoggerConfig();
+            _logToFile = false;
+            _logToConsole = true;
+            _logFilePath = string.Empty;
+        }
+        /// <summary>
+        /// Initializes a new instance of the Logger class with a specified log file path.
+        /// This constructor sets the logger to log messages to a file at the specified path.
+        /// </summary>
+        /// <param name="logPath">The file path where log messages will be written.</param>
+        public Logger(string logPath)
+        {
+            _logToFile = true;
+            _logToConsole = false;
+            _logFilePath = logPath;
+        }
+        /// <summary>
+        /// Initializes a new instance of the Logger class using an IConfigurationReader and a path to the configuration file.
+        /// This constructor allows for flexible configuration of the logger by reading settings from the specified configuration file.
+        /// </summary>
+        /// <param name="configReader">The IConfigurationReader to read the Logger configuration.</param>
+        /// <param name="path">The path to the configuration file that contains settings for the logger.</param>
+        public Logger(IConfigurationReader configReader, string Path)
+        {
+            var config = configReader.ReadConfiguration(Path);
             _logToFile = config.LogToFile;
             _logToConsole = config.LogToConsole;
             _logFilePath = config.LogFilePath;
-        }
-        /// <summary>
-        /// Initializes a new instance of the Logger class with specific settings.
-        /// </summary>
-        /// <param name="fromConfig">Specifies whether to read configuration from a file.</param>
-        /// <param name="path">The path for the log file or configuration file, depending on the fromConfig parameter.</param>
-        public Logger(bool fromConfig, string Path)
-        {
-            if (fromConfig == true)
-            {
-                var config = ConfigurationReader.ReadConfiguration(Path);
-                _logToFile = config.LogToFile;
-                _logToConsole = config.LogToConsole;
-                _logFilePath = config.LogFilePath;
-            }
-            else
-            {
-                _logToFile = true;
-                _logToConsole = false;
-                _logFilePath = Path;
-            }
         }
         /// <summary>
         /// Checks and rotates the log file if it exceeds the maximum size.

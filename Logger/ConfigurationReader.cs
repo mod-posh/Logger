@@ -5,7 +5,7 @@ namespace ModPosh.Logger
     /// <summary>
     /// Provides functionality to read configuration settings for the Logger.
     /// </summary>
-    public static class ConfigurationReader
+    public class ConfigurationReader : IConfigurationReader
     {
         /// <summary>
         /// Reads the logger configuration from a specified JSON file.
@@ -18,7 +18,7 @@ namespace ModPosh.Logger
         /// <remarks>
         /// If the file is not found or if the JSON content is invalid, this method returns a default LoggerConfig object with logging enabled to console only.
         /// </remarks>
-        public static LoggerConfig ReadConfiguration(string path)
+        public LoggerConfig ReadConfiguration(string path)
         {
             try
             {
