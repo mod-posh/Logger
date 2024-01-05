@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <PackageId>ModPosh.Logger</PackageId>
@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/mod-posh/Logger</RepositoryUrl>
     <Copyright>2024-01-01</Copyright>
     <PackageProjectUrl>https://github.com/mod-posh/Logger</PackageProjectUrl>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
