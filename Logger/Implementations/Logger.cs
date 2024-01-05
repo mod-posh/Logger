@@ -37,7 +37,7 @@ namespace ModPosh.Logger.Implementations
         /// This constructor allows for flexible configuration of the logger by reading settings from the specified configuration file.
         /// </summary>
         /// <param name="configReader">The IConfigurationReader to read the Logger configuration.</param>
-        /// <param name="path">The path to the configuration file that contains settings for the logger.</param>
+        /// <param name="Path">The path to the configuration file that contains settings for the logger.</param>
         public Logger(IConfigurationReader configReader, string Path)
         {
             var config = configReader.ReadConfiguration(Path);

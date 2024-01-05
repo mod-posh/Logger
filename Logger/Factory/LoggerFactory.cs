@@ -35,7 +35,7 @@ namespace ModPosh.Logger.Factory
         /// <summary>
         /// Creates a Logger instance that logs messages to a specified file.
         /// </summary>
-        /// <param name="path">The file path where log messages will be written.</param>
+        /// <param name="Path">The file path where log messages will be written.</param>
         /// <returns>An instance of Logger configured to log messages to the specified file.</returns>
         /// <remarks>
         /// This method creates a Logger instance that writes log messages to the file located at the provided path.
