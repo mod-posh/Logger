@@ -41,7 +41,7 @@ Write-Host -ForegroundColor Green "FwLink         : $($script:Fwlink)";
 Task default -depends LocalUse
 Task LocalUse -Description "Setup for local use and testing" -depends Clean, BuildProject
 Task Build -depends LocalUse, TestProject
-Task Package -depends UpdateReadme, CreateDocumentation
+Task Package -depends UpdateReadme, CreateDocumentation, PackageProject
 Task Deploy -depends CheckBranch, ReleaseNotes, PublishProject, NewTaggedRelease, Post2Discord, Post2Bluesky
 
 Task Clean -depends CleanProject {
@@ -120,7 +120,7 @@ Task CleanProject -Description "Clean the project before building" -Action {
  dotnet clean "$($script:Source)\$($script:ProjectName).sln" -c Debug
 }
 
-Task CreateDocumentation -Description "Create Docs" -Depends BuildProject -Action {
+Task CreateDocumentation -Description "Create Docs" -Action {
  defaultdocumentation -a "$($script:Source)\bin\Release\$($script:DotnetVersion)\$($script:ProjectName).dll" -o $script:Docs
 }
 
@@ -180,7 +180,10 @@ Task TestProject -Description "Test project" -Action {
  dotnet test $script:Source\$script:ProjectName.sln --logger "trx;LogFileName=$($script:Root)\$($script:TestFile)"
 }
 
-Task PublishProject -Description "Publish project to Nuget.org" -Action {
+Task PackageProject -Description "Package the project" -Action {
  dotnet pack $script:Source\$script:ProjectName.sln -o $script:Output -c Release
+}
+
+Task PublishProject -Description "Publish project to Nuget.org" -Action {
  dotnet nuget push $script:Output
 }
