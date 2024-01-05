@@ -22,6 +22,43 @@ else
 {
  throw "Please Install-Module -Name PowerShellForGitHub";
 }
+$DotnetTools = dotnet tool list --global;
+$DefaultDocumentationArray = ($DotnetTools |Select-String 'defaultdocumentation').ToString() -split '\s+';
+
+$DefaultDocumentation = New-Object PSObject -Property @{
+ PackageId = $DefaultDocumentationArray[0]
+ Version = $DefaultDocumentationArray[1]
+ Commands = $DefaultDocumentationArray[2]
+}
+
+if ($DefaultDocumentation)
+{
+ Write-Host -ForegroundColor Blue "Info: DefaultDocumentation Version $($DefaultDocumentation.Version) Found";
+ Write-Host -ForegroundColor Blue "Info: This automation built with PowerShellForGitHub Version 0.8.2";
+}
+else
+{
+ throw "Please dotnet tool install DefaultDocumentation.Console -g";
+}
+
+$gitConfigList =(git config --list)  -split '\n';
+$gitConfig = @{};
+foreach ($str in $gitConfigList) {
+ # Split the string into a key and a value
+ $keyValue = $str -split '='
+
+ # Add the key-value pair to the hashtable
+ $gitConfig[$keyValue[0]] = $keyValue[1]
+}
+
+if ($gitConfig['user.email'] -and $gitConfig['user.name'])
+{
+ Write-Host -ForegroundColor Blue "Info: Git Config has been setup";
+}
+else
+{
+ throw "please run git config user.email, git config user.name"
+}
 
 Write-Host -ForegroundColor Green "ProjectName    : $($script:ProjectName)";
 Write-Host -ForegroundColor Green "DotnetVersion  : $($script:DotnetVersion)";
@@ -40,7 +77,8 @@ Task default -depends LocalUse
 Task LocalUse -Description "Setup for local use and testing" -depends Clean, BuildProject
 Task Build -depends LocalUse, TestProject
 Task Package -depends UpdateReadme, CreateDocumentation, PackageProject
-Task Deploy -depends CheckBranch, ReleaseNotes, PublishProject, NewTaggedRelease, Post2Discord, Post2Bluesky
+Task Deploy -depends CheckBranch, ReleaseNotes, PublishProject, NewTaggedRelease
+Task Notifications -depends Post2Discord, Post2Bluesky
 
 Task Clean -depends CleanProject {
  $null = Remove-Item $script:Output -Recurse -ErrorAction Ignore
