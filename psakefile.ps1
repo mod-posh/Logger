@@ -186,5 +186,6 @@ Task PackageProject -Description "Package the project" -Action {
 }
 
 Task PublishProject -Description "Publish project to Nuget.org" -Action {
- dotnet nuget push $script:Output
+ $PackageFile = (Get-ChildItem -Filter *.nupkg $script:Output).FullName
+ dotnet nuget push $PackageFile
 }
