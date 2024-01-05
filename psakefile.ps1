@@ -57,7 +57,7 @@ Task UpdateReadme -Description "Update the README file" -Action {
  $TableHeaders = "| Latest Version | Nuget.org | Issues | License | Discord |"
  $Columns = "|-----------------|----------------|----------------|----------------|----------------|"
  $VersionBadge = "[![Latest Version](https://img.shields.io/github/v/tag/$($script:GithubOrg)/$($script:ProjectName))]($($script:Repository)/$($script:ProjectName)/tags)"
- $GalleryBadge = "[![Nuget.org](https://img.shields.io/nuget/dt/$($PackageIde))]($($script:NugetOrg)/$($PackageId))"
+ $GalleryBadge = "[![Nuget.org](https://img.shields.io/nuget/dt/$($PackageId))]($($script:NugetOrg)/$($PackageId))"
  $IssueBadge = "[![GitHub issues](https://img.shields.io/github/issues/$($script:GithubOrg)/$($script:ProjectName))]($($script:Repository)/$($script:ProjectName)/issues)"
  $LicenseBadge = "[![GitHub license](https://img.shields.io/github/license/$($script:GithubOrg)/$($script:ProjectName))]($($script:Repository)/$($script:ProjectName)/blob/master/LICENSE)"
  $DiscordBadge = "[![Discord Server](https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg)]($($script:DiscordChannel))"
