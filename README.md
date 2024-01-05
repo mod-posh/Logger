@@ -7,7 +7,7 @@
 
 ## Code Documentation
 
-Detailed documentation can be found in the [docs](docs\index.md) folder.
+Detailed documentation can be found in the [docs](docs/index.md) folder.
 
 ## Features
 
