@@ -52,7 +52,7 @@ Task Clean -depends CleanProject {
 }
 
 Task UpdateReadme -Description "Update the README file" -Action {
- $readMe = Get-Item .\README.md
+ $readMe = Get-Item -Path "$($script:Root)\README.md"
 
  $TableHeaders = "| Latest Version | Nuget.org | Issues | License | Discord |"
  $Columns = "|-----------------|----------------|----------------|----------------|----------------|"
@@ -65,6 +65,8 @@ Task UpdateReadme -Description "Update the README file" -Action {
  Write-Output $TableHeaders | Out-File $readMe.FullName -Force
  Write-Output $Columns | Out-File $readMe.FullName -Append
  Write-Output "| $($VersionBadge) | $($GalleryBadge) | $($IssueBadge) | $($LicenseBadge) | $($DiscordBadge) |" | Out-File $readMe.FullName -Append
+
+ Get-Content -Path "$($script:Root)\$($script:ProjectName).md" |Out-File -FilePath $readMe.FullName -Append
 }
 
 Task NewTaggedRelease -Description "Create a tagged release" -Action {
