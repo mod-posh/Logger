@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageId>ModPosh.Logger</PackageId>
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>ModPosh.Logger</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,6 +13,9 @@
     <Description>A Logging library for .Net and PowerShell</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/mod-posh/Logger</RepositoryUrl>
+    <Copyright>2024-01-01</Copyright>
+    <PackageProjectUrl>https://github.com/mod-posh/Logger</PackageProjectUrl>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
