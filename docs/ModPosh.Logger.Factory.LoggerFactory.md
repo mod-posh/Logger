@@ -1,5 +1,4 @@
 #### [Logger](index.md 'index')
-
 ### [ModPosh.Logger.Factory](ModPosh.Logger.Factory.md 'ModPosh.Logger.Factory')
 
 ## LoggerFactory Class
