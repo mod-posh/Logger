@@ -1,15 +1,15 @@
-$script:ProjectName = "Logger"; # The name of your C# Project
-$script:DotnetVersion = "net7.0"; # The version of .Net the project is targeted to
-$script:GithubOrg = 'mod-posh' # This could be your github username if you're not working in a Github Org
-$script:Repository = "https://github.com/$($script:GithubOrg)"; # This is the Github Repo
-$script:DeployBranch = 'main'; # The branch that we deploy from, typically master or main
-$script:Root = $PSScriptRoot; # This will be the root of your Module Project, not the Repository Root
-$script:Source = Join-Path $PSScriptRoot $script:ProjectName; # This will be the root of your Module Project, not the Repository Root
-$script:Output = Join-Path $PSScriptRoot 'output'; # The module will be output into this folder
-$script:Docs = Join-Path $PSScriptRoot 'docs'; # The root folder for the PowerShell Module
-$script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-'); # The Pester Test output file
+$script:ProjectName = "Logger";                                                                 # The name of your C# Project
+$script:DotnetVersion = "net7.0";                                                               # The version of .Net the project is targeted to
+$script:GithubOrg = 'mod-posh'                                                                  # This could be your github username if you're not working in a Github Org
+$script:Repository = "https://github.com/$($script:GithubOrg)";                                 # This is the Github Repo
+$script:DeployBranch = 'main';                                                                  # The branch that we deploy from, typically master or main
+$script:Root = $PSScriptRoot;                                                                   # This will be the root of your Module Project, not the Repository Root
+$script:Source = Join-Path $PSScriptRoot $script:ProjectName;                                   # This will be the root of your Module Project, not the Repository Root
+$script:Output = Join-Path $PSScriptRoot 'output';                                              # The module will be output into this folder
+$script:Docs = Join-Path $PSScriptRoot 'docs';                                                  # The root folder for the PowerShell Module
+$script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-');                 # The Pester Test output file
 $script:DiscordChannel = "https://discord.com/channels/1044305359021555793/1044305781627035811" # Discord Channel
-$script:PoshGallery = "https://www.nuget.org/packages/$($script:ProjectName)"        # The PowerShell Gallery URL
+$script:NugetOrg = "https://www.nuget.org/packages"                                             # The Nuget.org URL
 
 $PowerShellForGitHub = Get-Module -ListAvailable | Where-Object -Property Name -eq PowerShellForGitHub;
 if ($PowerShellForGitHub)
@@ -33,7 +33,7 @@ Write-Host -ForegroundColor Green "Docs           : $($script:Docs)";
 Write-Host -ForegroundColor Green "TestFile       : $($script:TestFile)";
 Write-Host -ForegroundColor Green "Repository     : $($script:Repository)";
 Write-Host -ForegroundColor Green "DiscordChannel : $($script:DiscordChannel)";
-Write-Host -ForegroundColor Green "PoshGallery    : $($script:PoshGallery)";
+Write-Host -ForegroundColor Green "NugetOrg       : $($script:NugetOrg)";
 Write-Host -ForegroundColor Green "DeployBranch   : $($script:DeployBranch)";
 
 Task default -depends LocalUse
@@ -50,12 +50,14 @@ Task Clean -depends CleanProject {
 }
 
 Task UpdateReadme -Description "Update the README file" -Action {
+ $Project = [xml](Get-Content -Path "$($script:Source)\$($script:ProjectName).csproj");
+ $PackageId = $Project.Project.PropertyGroup.PackageId;
  $readMe = Get-Item -Path "$($script:Root)\README.md"
 
  $TableHeaders = "| Latest Version | Nuget.org | Issues | License | Discord |"
  $Columns = "|-----------------|----------------|----------------|----------------|----------------|"
  $VersionBadge = "[![Latest Version](https://img.shields.io/github/v/tag/$($script:GithubOrg)/$($script:ProjectName))]($($script:Repository)/$($script:ProjectName)/tags)"
- $GalleryBadge = "[![Nuget.org](https://img.shields.io/nuget/dt/$($script:ProjectName))](https://www.nuget.org/packages/$($script:ProjectName))"
+ $GalleryBadge = "[![Nuget.org](https://img.shields.io/nuget/dt/$($PackageIde))]($($script:NugetOrg)/$($PackageId))"
  $IssueBadge = "[![GitHub issues](https://img.shields.io/github/issues/$($script:GithubOrg)/$($script:ProjectName))]($($script:Repository)/$($script:ProjectName)/issues)"
  $LicenseBadge = "[![GitHub license](https://img.shields.io/github/license/$($script:GithubOrg)/$($script:ProjectName))]($($script:Repository)/$($script:ProjectName)/blob/master/LICENSE)"
  $DiscordBadge = "[![Discord Server](https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg)]($($script:DiscordChannel))"
@@ -84,14 +86,16 @@ Task NewTaggedRelease -Description "Create a tagged release" -Action {
 Task Post2Discord -Description "Post a message to discord" -Action {
  $Project = [xml](Get-Content -Path "$($script:Source)\$($script:ProjectName).csproj");
  $Version = $Project.Project.PropertyGroup.Version.ToString();
+ $PackageId = $Project.Project.PropertyGroup.PackageId;
  $Discord = Get-Content -Path "$($PSScriptRoot)\discord.json" | ConvertFrom-Json
- $Discord.message.content = "Version $($version) of $($script:ProjectName) released. Please visit Github ($($script:Repository)/$($script:ProjectName)) or PowershellGallery ($($script:PoshGallery)) to download."
+ $Discord.message.content = "Version $($version) of $($script:ProjectName) released. Please visit Github ($($script:Repository)/$($script:ProjectName)) or Nuget.org ($($script:NugetOrg)/$($PackageId)) to download."
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
 
 Task Post2Bluesky -Description "Post a message to bsky.app" -Action {
  $Project = [xml](Get-Content -Path "$($script:Source)\$($script:ProjectName).csproj");
  $Version = $Project.Project.PropertyGroup.Version.ToString();
+ $PackageId = $Project.Project.PropertyGroup.PackageId;
  $createdAt = Get-Date -Format "yyyy-MM-ddTHH:mm:ss.ffffffZ"
  # Authenticate
  $AuthBody = Get-Content -Path "$($PSScriptRoot)\bluesky.json"
@@ -103,7 +107,7 @@ Task Post2Bluesky -Description "Post a message to bsky.app" -Action {
  $Headers.Add('Authorization', "Bearer $($Response.accessJwt)")
  $Record = New-Object -TypeName psobject -Property @{
   '$type'     = "app.bsky.feed.post"
-  'text'      = "Version $($version) of $($script:ProjectName) released. Please visit Github ($($script:Repository)/$($script:ProjectName)) or PowershellGallery ($($script:PoshGallery)) to download."
+  'text'      = "Version $($version) of $($script:ProjectName) released. Please visit Github ($($script:Repository)/$($script:ProjectName)) or Nuget.org ($($script:NugetOrg)/$($PackageId)) to download."
   "createdAt" = $createdAt
  }
  $Post = New-Object -TypeName psobject -Property @{
@@ -186,6 +190,10 @@ Task PackageProject -Description "Package the project" -Action {
 }
 
 Task PublishProject -Description "Publish project to Nuget.org" -Action {
- $PackageFile = (Get-ChildItem -Filter *.nupkg $script:Output).FullName
+ $Project = [xml](Get-Content -Path "$($script:Source)\$($script:ProjectName).csproj");
+ $PackageId = $Project.Project.PropertyGroup.PackageId;
+ $Version = $Project.Project.PropertyGroup.Version.ToString();
+
+ $PackageFile = "$($script:Output)\$($PackageId).$($Version).nupkg"
  dotnet nuget push $PackageFile
 }
