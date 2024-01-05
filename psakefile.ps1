@@ -10,7 +10,6 @@ $script:Docs = Join-Path $PSScriptRoot 'docs'; # The root folder for the PowerSh
 $script:TestFile = ("TestResults_$(Get-Date -Format s).xml").Replace(':', '-'); # The Pester Test output file
 $script:DiscordChannel = "https://discord.com/channels/1044305359021555793/1044305781627035811" # Discord Channel
 $script:PoshGallery = "https://www.nuget.org/packages/$($script:ProjectName)"        # The PowerShell Gallery URL
-$script:Fwlink = "https://raw.githubusercontent.com/$($script:GithubOrg)/$($script:ProjectName)/main/cabs/"
 
 $PowerShellForGitHub = Get-Module -ListAvailable | Where-Object -Property Name -eq PowerShellForGitHub;
 if ($PowerShellForGitHub)
@@ -36,7 +35,6 @@ Write-Host -ForegroundColor Green "Repository     : $($script:Repository)";
 Write-Host -ForegroundColor Green "DiscordChannel : $($script:DiscordChannel)";
 Write-Host -ForegroundColor Green "PoshGallery    : $($script:PoshGallery)";
 Write-Host -ForegroundColor Green "DeployBranch   : $($script:DeployBranch)";
-Write-Host -ForegroundColor Green "FwLink         : $($script:Fwlink)";
 
 Task default -depends LocalUse
 Task LocalUse -Description "Setup for local use and testing" -depends Clean, BuildProject
