@@ -178,6 +178,10 @@ Task ReleaseNotes -Description "Create release notes file for project" -Action {
    }
   }
   Out-File -FilePath "$($PSScriptRoot)\RELEASE.md" -InputObject $stringbuilder.ToString() -Encoding ascii -Force
+  $Project = [xml](Get-Content -Path "$($script:Source)\$($script:ProjectName).csproj");
+  $ReleaseNotes = (Get-Content -Path "$($PSScriptRoot)\RELEASE.md").Replace('## ', '-').Replace('# ', '').Replace('*', '-')
+  $Project.Project.PropertyGroup.PackageReleaseNotes = $ReleaseNotes
+  $Project.Save("$($script:Source)\$($script:ProjectName).csproj")
  }
 }
 
