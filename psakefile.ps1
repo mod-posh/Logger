@@ -148,10 +148,24 @@ Task Post2Bluesky -Description "Post a message to bsky.app" -Action {
   'text'      = "Version $($version) of $($script:ProjectName) released. Please visit Github ($($script:Repository)/$($script:ProjectName)) or Nuget.org ($($script:NugetOrg)/$($PackageId)) to download."
   "createdAt" = $createdAt
  }
+ $embeds = @()
+ $embeds += New-Object -TypeName psobject -Property @{
+  '$type'='app.bsky.embed.link'
+  'url'="$($script:Repository)/$($script:ProjectName)"
+  'title'="Github.com $($script:ProjectName)"
+  'description'=$project.Project.PropertyGroup.Description
+ }
+ $embeds += New-Object -TypeName psobject -Property @{
+  '$type'='app.bsky.embed.link'
+  'url'="$($script:NugetOrg)/$($PackageId)"
+  'title'="Nuget.org $($script:ProjectName)"
+  'description'=$project.Project.PropertyGroup.Description
+ }
  $Post = New-Object -TypeName psobject -Property @{
   'repo'       = $Handle
   'collection' = 'app.bsky.feed.post'
   record       = $Record
+  embeds       = $embeds
  }
 
  Invoke-RestMethod -Uri "https://bsky.social/xrpc/com.atproto.repo.createRecord" -Method Post -Body ($Post | ConvertTo-Json -Compress) -Headers $Headers
