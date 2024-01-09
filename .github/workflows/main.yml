@@ -1,0 +1,70 @@
+name: .NET 7 Build, Test, and Release Process
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    runs-on: windows-latest
+    outputs:
+      should-run: ${{ steps.set-output.outputs.should-run }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ github.workspace }}/<YourProjectName>/<YourProjectName>.sln
+
+    - name: Clean
+      run: dotnet clean ${{ github.workspace }}/<YourProjectName>/<YourProjectName>.sln --configuration Release
+
+    - name: Build
+      run: dotnet build ${{ github.workspace }}/<YourProjectName>/<YourProjectName>.sln --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test ${{ github.workspace }}/<YourProjectName>/<YourProjectName>.sln --configuration Release --no-build
+
+    - name: Set Output
+      run: echo "::set-output name=should-run::true"
+      id: set-output
+
+  project_operations:
+    needs: build_and_test
+    if: needs.build_and_test.outputs.should-run == 'true'
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Generate Release Notes from Milestone
+      uses: jeffpatton1971/Issue2Release@v0.0.1.2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        milestone: '<YourMilestone>'
+
+  pack_and_publish:
+    needs: [build_and_test, project_operations]
+    if: needs.build_and_test.outputs.should-run == 'true'
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Package
+      run: dotnet pack ${{ github.workspace }}/<YourProjectName>/<YourProjectName>.sln --configuration Release --no-build --output nupkgs
+
+    - name: Publish NuGet Package
+      run: |
+        nuget push **/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
