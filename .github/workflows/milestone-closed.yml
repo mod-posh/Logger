@@ -1,0 +1,19 @@
+name: Generate Release Notes on Milestone Closure
+
+on:
+  milestone:
+    types: [closed]
+
+jobs:
+  generate_release_notes:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Generate Release Notes
+      uses: jeffpatton1971/Issue2Release@v0.0.1.2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        milestone: ${{ github.event.milestone.number }}
