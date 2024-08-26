@@ -1,19 +1,69 @@
-name: Generate Release Notes on Milestone Closure
+name: New Release
 
 on:
   milestone:
     types: [closed]
 
 jobs:
-  generate_release_notes:
+  create-release:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Generate Release Notes
-      uses: jeffpatton1971/Issue2Release@v0.0.1.2
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        milestone: ${{ github.event.milestone.number }}
+      - name: Get Project Version
+        id: get_version
+        uses: mod-posh/GetProjectVersion@v0.0.2.2
+        with:
+          Filename: 'Logger/Logger.csproj'
+          verbose: "verbose"
+
+      - name: Create Release Notes
+        uses: mod-posh/Issue2ReleaseNotes@v0.0.3.3
+        with:
+          milestone_number: ${{ github.event.milestone.number }}
+          verbose: 'verbose'
+          github_token: ${{ secrets.PAT }}
+
+      - name: Pull Latest Changes
+        run: git pull origin ${{ github.ref_name }}
+        shell: bash
+
+      - name: Create Release
+        uses: mod-posh/NewTaggedRelease@v0.0.3.2
+        with:
+          name: 'Release v${{ env.VERSION }}'
+          filename: 'RELEASE.md'
+          version: ${{ env.VERSION }}
+          verbose: 'verbose'
+          github_token: ${{ secrets.PAT }}
+
+      - name: Install XMLDocMD Tool
+        run: dotnet tool install --global xmldocmd
+
+      - name: Build Project
+        run: dotnet build Logger/Logger.csproj --configuration Release
+
+      - name: Publish Project
+        run: dotnet publish Logger/Logger.csproj --configuration Release --output ./publish
+
+      - name: Generate Documentation
+        run: |
+          xmldocmd ./publish/Logger.dll Docs --visibility private --clean --namespace ModPosh.Logger --namespace-pages
+        env:
+          PATH: ${{ github.runner.tool_cache }}/.dotnet/tools:$PATH:~/.dotnet/tools
+
+      - name: Run markdownlint-cli2-action
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: '**/*.md'
+          fix: true
+
+      - name: Commit Documentation Changes
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add Docs/
+          git commit -m "Update documentation for release v${{ env.VERSION }}"
+          git push origin ${{ github.ref_name }}
+        if: success()
