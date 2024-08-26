@@ -44,12 +44,21 @@ jobs:
       - name: Build Project
         run: dotnet build Logger/Logger.csproj --configuration Release
 
-      - name: Publish Project
-        run: dotnet publish Logger/Logger.csproj --configuration Release --output ./publish
+      - name: Publish Project for .NET 6.0
+        run: dotnet publish Logger/Logger.csproj --configuration Release --framework net6.0 --output ./publish/net6.0
 
-      - name: Generate Documentation
+      - name: Publish Project for .NET 7.0
+        run: dotnet publish Logger/Logger.csproj --configuration Release --framework net7.0 --output ./publish/net7.0
+
+      - name: Generate Documentation for .NET 6.0
         run: |
-          xmldocmd ./publish/Logger.dll Docs --visibility private --clean --namespace ModPosh.Logger --namespace-pages
+          xmldocmd ./publish/net6.0/Logger.dll Docs --visibility private --clean --namespace ModPosh.Logger --namespace-pages
+        env:
+          PATH: ${{ github.runner.tool_cache }}/.dotnet/tools:$PATH:~/.dotnet/tools
+
+      - name: Generate Documentation for .NET 7.0
+        run: |
+          xmldocmd ./publish/net7.0/Logger.dll Docs --visibility private --clean --namespace ModPosh.Logger --namespace-pages
         env:
           PATH: ${{ github.runner.tool_cache }}/.dotnet/tools:$PATH:~/.dotnet/tools
 

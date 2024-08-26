@@ -59,7 +59,7 @@ jobs:
       run: dotnet build ${{ github.workspace }}/Logger/Logger.sln --configuration Release --no-restore
 
     - name: Package
-      run: dotnet pack ${{ github.workspace }}/Logger/Logger.sln --configuration Release --output nupkgs
+      run: dotnet pack ${{ github.workspace }}/Logger/Logger.csproj --configuration Release --output nupkgs
 
     - name: Publish NuGet Package
       run: |
